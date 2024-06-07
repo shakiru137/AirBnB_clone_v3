@@ -173,3 +173,22 @@ class TestDBStorage(unittest.TestCase):
         dbc1.close()
         cursor.close()
         dbc.close()
+
+
+    def test_get(self):
+        """Test that get method retrieves the correct object."""
+        new_state = State(name="California")
+        storage.new(new_state)
+        storage.save()
+        self.assertEqual(storage.get(State, new_state.id), new_state)
+        self.assertIsNone(storage.get(State, "fake_id"))
+
+    def test_count(self):
+        """Test that count method returns the correct number of objects."""
+        initial_count = storage.count()
+        initial_count_states = storage.count(State)
+        new_state = State(name="New York")
+        storage.new(new_state)
+        storage.save()
+        self.assertEqual(storage.count(), initial_count + 1)
+        self.assertEqual(storage.count(State), initial_count_states + 1)

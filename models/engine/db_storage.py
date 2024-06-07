@@ -95,3 +95,21 @@ class DBStorage:
     def close(self):
         """closes the working SQLAlchemy session"""
         self.__session.close()
+
+
+     def get(self, cls, id):
+        """Retrieve one object based on class and ID."""
+        if cls not in classes.values():
+            return None
+        return self.__session.query(cls).filter_by(id=id).first()
+
+    def count(self, cls=None):
+        """Count the number of objects in storage matching the given class."""
+        if cls is None:
+            total = 0
+            for c in classes.values():
+                total += self.__session.query(c).count()
+            return total
+        if cls in classes.values():
+            return self.__session.query(cls).count()
+        return 0
